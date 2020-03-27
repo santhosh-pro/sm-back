@@ -4,6 +4,9 @@ import { AppService } from './app.service';
 import {TypeOrmModule} from "@nestjs/typeorm";
 import { ApiModule } from './api/api.module';
 import {entities} from "./entities";
+import { TemplateController } from './template/template.controller';
+import { TemplateService } from './template/template.service';
+import { TemplateModule } from './template/template.module';
 
 @Module({
   imports: [TypeOrmModule.forRoot({
@@ -15,7 +18,7 @@ import {entities} from "./entities";
     database: 'bb',
     entities,
     synchronize: true,
-  }), ApiModule,],
+  }), ApiModule, TemplateModule,],
   controllers: [AppController],
   providers: [AppService],
 })
