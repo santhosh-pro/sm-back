@@ -1,17 +1,17 @@
 import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
-import {Col} from "../entities/Col";
+import {Dictionary} from "../entities/Dictionary";
 
-@Controller('api/columns')
-export class ColumnController {
+@Controller('api/dictionaries')
+export class DictionaryController {
     constructor(
-        @InjectRepository(Col)
-        private readonly repo: Repository<Col>,
+        @InjectRepository(Dictionary)
+        private readonly repo: Repository<Dictionary>,
     ) {}
 
     @Get()
-    public async all():Promise<Col[]>{
+    public async all():Promise<Dictionary[]>{
         return await this.repo.find();
     }
     @Get(":id")
@@ -20,14 +20,15 @@ export class ColumnController {
     }
 
     @Post()
-    public async create(@Body() column: Col): Promise<Col>{
-        return await this.repo.save(column);
+    public async create(@Body() req: Dictionary): Promise<Dictionary>{
+        return await this.repo.save(req);
     }
 
     @Put()
-    public async update(@Body() column: Col):Promise<Col> {
-        await this.repo.update(column.id,column);
-        return column
+    public async update(@Body() req: Dictionary):Promise<Dictionary> {
+        delete req.values;
+        await this.repo.update(req.id,req);
+        return req
 
     }
 

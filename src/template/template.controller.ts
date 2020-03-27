@@ -12,13 +12,14 @@ export class TemplateController {
         console.dir(res);
         return res;
     }
-    @Get("/templates/:id")
+    @Get(":id")
     public async one(@Param("id")id:number):Promise<any>{
         return  await this.TService.one(id);
     }
 
     @Post()
     public async create(@Body() template: Template): Promise<Template>{
+        console.log(template)
         return await this.TService.create(template);
     }
 
