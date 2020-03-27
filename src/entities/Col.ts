@@ -45,6 +45,7 @@ export class Col {
     )
     template: Template;
 
+
     @ManyToMany(type => Tree)
     @JoinTable()
     tree: Tree;

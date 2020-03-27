@@ -26,7 +26,6 @@ export class DictionaryController {
 
     @Put()
     public async update(@Body() req: Dictionary):Promise<Dictionary> {
-        delete req.values;
         await this.repo.update(req.id,req);
         return req
 

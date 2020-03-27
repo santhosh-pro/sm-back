@@ -1,6 +1,5 @@
 import {Column, CreateDateColumn, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {Template} from "./Template";
-import {Dictionary} from "./Dictionary";
+import {DictionaryType} from "./DictionaryType";
 
 
 @Entity()
@@ -10,19 +9,13 @@ export class DictionaryValue {
     id: number;
 
     @Column()
-    isDefault: boolean;
-
-    @Column()
     value: string;
 
-    @Column()
-    key: string;
-
     @ManyToOne(
-        type => Dictionary,
+        type => DictionaryType,
         col => col.values
     )
-    dictionary: Dictionary;
+    type: DictionaryType;
 
     @CreateDateColumn({type: "timestamp"})
     createdAt: string;

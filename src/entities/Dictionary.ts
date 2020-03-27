@@ -1,6 +1,5 @@
 import {Column, CreateDateColumn, Entity, OneToMany, PrimaryGeneratedColumn, UpdateDateColumn} from "typeorm";
-import {Row} from "./Row";
-import {DictionaryValue} from "./DictionaryValue";
+import {DictionaryType} from "./DictionaryType";
 
 
 @Entity()
@@ -13,11 +12,11 @@ export class Dictionary {
     name: string;
 
     @OneToMany(
-        type => DictionaryValue,
+        type => DictionaryType,
         row => row.dictionary,
         {eager:true}
     )
-    values: DictionaryValue[];
+    types: DictionaryType[];
 
     @CreateDateColumn({type: "timestamp"})
     createdAt: string;

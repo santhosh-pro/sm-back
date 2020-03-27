@@ -7,6 +7,7 @@ import {Cell} from "./Cell";
 import {Tree} from "./Tree";
 import {Converter} from "./Converter";
 import {ConverterValue} from "./ConverterValue";
+import {DictionaryType} from "./DictionaryType";
 
 export const entities = [
     Template,
@@ -17,5 +18,6 @@ export const entities = [
     Cell,
     Tree,
     Converter,
-    ConverterValue
+    ConverterValue,
+    DictionaryType
 ];
