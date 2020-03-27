@@ -17,7 +17,7 @@ export class Template {
             row => row.template,
         {eager:true}
         )
-    rows: Row[]
+    rows: Row[];
 
     @OneToMany(
         type => Col,
