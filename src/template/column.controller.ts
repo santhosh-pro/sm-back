@@ -1,7 +1,8 @@
-import {Body, Controller, Delete, Get, Param, Post, Put} from '@nestjs/common';
+import {Body, Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Col} from "../entities/Col";
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 
 @Controller('api/columns')
 export class ColumnController {
@@ -11,9 +12,22 @@ export class ColumnController {
     ) {}
 
     @Get()
-    public async all():Promise<Col[]>{
-        return await this.repo.find();
+    public async all(
+        @Query('page') page = 0,
+        @Query('limit') limit = 10
+    ):Promise<Pagination<Col>>{
+        limit = limit > 100 ? 100 : limit;
+        const options: IPaginationOptions = {
+            limit,
+            page
+        };
+        const queryBuilder = this.repo
+            .createQueryBuilder('col')
+            .leftJoinAndSelect("col.template", "template");
+
+        return await paginate<Col>(queryBuilder, options);
     }
+
     @Get(":id")
     public async one(@Param("id")id:number):Promise<any>{
         return  await this.repo.find({id});

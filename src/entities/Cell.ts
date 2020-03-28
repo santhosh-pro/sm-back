@@ -11,9 +11,6 @@ import {Template} from "./Template";
 import {Row} from "./Row";
 import {Col} from "./Col";
 import {Tree} from "./Tree";
-import {Dictionary} from "./Dictionary";
-import {DictionaryValue} from "./DictionaryValue";
-import {Converter} from "./Converter";
 import {ConverterValue} from "./ConverterValue";
 
 
@@ -59,9 +56,9 @@ export class Cell {
     @JoinTable()
     tree: Tree;
 
-    @ManyToMany(type => DictionaryValue)
+    @ManyToMany(type => Row)
     @JoinTable()
-    dictionaryValue: DictionaryValue;
+    link: Row;
 
     @ManyToMany(type => ConverterValue)
     @JoinTable()

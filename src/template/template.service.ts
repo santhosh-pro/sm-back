@@ -2,6 +2,7 @@ import { Injectable } from '@nestjs/common';
 import {Template} from "../entities/Template";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
+import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 
 @Injectable()
 export class TemplateService {
@@ -10,10 +11,8 @@ export class TemplateService {
         private readonly TRepo: Repository<Template>,
     ) {}
 
-    async all():Promise<Template[]> {
-        return await this.TRepo.createQueryBuilder("template")
-            .select("template")
-            .getMany();
+    async all(options: IPaginationOptions):Promise<Pagination<Template>> {
+        return await paginate<Template>(this.TRepo, options);
     }
 
     async create(template: Template):Promise<Template>{
@@ -30,6 +29,6 @@ export class TemplateService {
     }
 
     async one(id: number) {
-        return await this.TRepo.findOne(id,{relations: ["cells","cols"]})
+        return await this.TRepo.findOne(id)
     }
 }

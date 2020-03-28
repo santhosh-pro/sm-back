@@ -10,7 +10,6 @@ import {
 import {Template} from "./Template";
 import {Cell} from "./Cell";
 import {Tree} from "./Tree";
-import {Dictionary} from "./Dictionary";
 import {Converter} from "./Converter";
 
 
@@ -50,9 +49,9 @@ export class Col {
     @JoinTable()
     tree: Tree;
 
-    @ManyToMany(type => Dictionary)
+    @ManyToMany(type => Template)
     @JoinTable()
-    dictionary: Dictionary;
+    link: Template;
 
     @ManyToMany(type => Converter)
     @JoinTable()
