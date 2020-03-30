@@ -42,7 +42,8 @@ export class Cell {
 
     @ManyToOne(
         type => Col,
-        col => col.cells
+        col => col.cells,
+        {eager: true}
     )
     column: Col;
 

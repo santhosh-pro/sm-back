@@ -13,11 +13,12 @@ export class Row {
         type => Template,
             template => template.rows
         )
-    template: Template
+    template: Template;
 
     @OneToMany(
         type => Cell,
-        cell => cell.row
+        cell => cell.row,
+        {cascade: true,eager: true}
         )
     cells: Cell[];
 }

@@ -27,8 +27,8 @@ export class TemplateController {
     }
 
     @Put()
-    public async update(@Body() template: Template):Promise<Template> {
-        return await this.TService.update(template)
+    public async update(@Body() template: Template):Promise<void> {
+        await this.TService.update(template)
     }
 
     @Delete("/:id")

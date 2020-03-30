@@ -19,9 +19,9 @@ export class TemplateService {
         return await this.TRepo.save(template);
     }
 
-    async update(template: Template):Promise<Template> {
-        await this.TRepo.update(template.id,template);
-        return template;
+    async update(template: Template):Promise<void> {
+        console.log(template);
+        await this.TRepo.save(template);
     }
 
     async delete(id: number):Promise<void> {

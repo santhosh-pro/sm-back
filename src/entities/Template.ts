@@ -1,4 +1,9 @@
-import {Entity, Column, PrimaryGeneratedColumn, OneToMany} from 'typeorm';
+import {
+    Entity,
+    Column,
+    PrimaryGeneratedColumn,
+    OneToMany
+} from 'typeorm';
 import {Row} from "./Row";
 import {Col} from "./Col";
 import {Cell} from "./Cell";
@@ -14,15 +19,17 @@ export class Template {
 
     @OneToMany(
         type => Row,
-            row => row.template,
-        {eager:true}
+            row => row.template
         )
     rows: Row[];
 
     @OneToMany(
         type => Col,
         row => row.template,
-        {eager:true}
+        {
+            eager:true,
+            cascade: true
+        }
     )
     columns: Col[];
 

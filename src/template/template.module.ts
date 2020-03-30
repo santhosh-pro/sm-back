@@ -5,13 +5,17 @@ import {TemplateController} from "./template.controller";
 import {TemplateService} from "./template.service";
 import {ColumnController} from "./column.controller";
 import {TreeController} from "./tree.controller";
+import {CellController} from "./cell.controller";
+import {RowController} from "./row.controller";
 
 @Module({
     imports: [TypeOrmModule.forFeature(entities)],
     controllers: [
         TemplateController,
         ColumnController,
-        TreeController
+        TreeController,
+        CellController,
+        RowController
     ],
     providers: [TemplateService]
 })
