@@ -5,7 +5,7 @@ import {
     ManyToOne,
     CreateDateColumn,
     UpdateDateColumn,
-    OneToMany, ManyToMany, JoinTable
+    OneToMany, ManyToMany, JoinTable, OneToOne
 } from "typeorm";
 import {Template} from "./Template";
 import {Cell} from "./Cell";
@@ -38,25 +38,6 @@ export class Col {
     @Column()
     name: string;
 
-    @ManyToOne(
-        type => Template,
-        template => template.columns
-    )
-    template: Template;
-
-
-    @ManyToMany(type => Tree)
-    @JoinTable()
-    tree: Tree;
-
-    @ManyToMany(type => Template)
-    @JoinTable()
-    link: Template;
-
-    @ManyToMany(type => Converter)
-    @JoinTable()
-    converter: Converter;
-
     @Column({
         type: 'enum',
         enum: CellType,
@@ -70,6 +51,25 @@ export class Col {
         default: ColumnType.SIMPLE
     })
     columnType: ColumnType;
+
+    @ManyToOne(
+        type => Template,
+        template => template.columns
+    )
+    template: Template;
+
+
+    @ManyToMany(type => Tree)
+    @JoinTable()
+    tree: Tree;
+
+    @ManyToMany(type => Template,{cascade:true})
+    @JoinTable({name: 'link'})
+    link: Template[];
+
+    @ManyToMany(type => Converter)
+    @JoinTable()
+    converter: Converter;
 
     @OneToMany(
         type => Cell,

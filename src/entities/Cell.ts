@@ -57,9 +57,9 @@ export class Cell {
     @JoinTable()
     tree: Tree;
 
-    @ManyToMany(type => Row)
+    @ManyToMany(type => Row,{eager: true})
     @JoinTable()
-    link: Row;
+    link: Row[];
 
     @ManyToMany(type => ConverterValue)
     @JoinTable()

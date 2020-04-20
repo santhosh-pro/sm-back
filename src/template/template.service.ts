@@ -3,12 +3,15 @@ import {Template} from "../entities/Template";
 import {InjectRepository} from "@nestjs/typeorm";
 import {Repository} from "typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
+import {Col} from "../entities/Col";
 
 @Injectable()
 export class TemplateService {
     constructor(
         @InjectRepository(Template)
         private readonly TRepo: Repository<Template>,
+        @InjectRepository(Col)
+        private readonly CRepo: Repository<Col>,
     ) {}
 
     async all(options: IPaginationOptions):Promise<Pagination<Template>> {
@@ -29,6 +32,17 @@ export class TemplateService {
     }
 
     async one(id: number) {
-        return await this.TRepo.findOne(id)
+        let template = await this.TRepo.findOne(id,{relations: ['columns','columns.link']});
+        let columns = await this.CRepo.find(
+            {
+                where:{
+                    template:{id:template.id}
+                },
+                relations: ["link"]
+            });
+        template.columns.forEach((col,index)=>{
+            template.columns[index] = columns.find(c=> c.id === col.id);
+        });
+        return template;
     }
 }

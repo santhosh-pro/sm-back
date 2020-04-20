@@ -41,7 +41,17 @@ export class CellController {
         if (!cell.row.id) {
             const row = new Row();
             row.template = cell.template;
-            cell.row = row
+            cell.row = await this.rowRepo.save(row);
+        }
+        return await this.repo.save(cell);
+    }
+
+    @Post("/create-link")
+    public async createLink(@Body() cell: Cell): Promise<Cell>{
+        let cellFromDb = await this.repo.findOne({id: cell.id});
+        if (cellFromDb) {
+            cellFromDb.link = cell.link;
+            return await this.repo.save(cellFromDb);
         }
         return await this.repo.save(cell);
     }

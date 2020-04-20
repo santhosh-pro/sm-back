@@ -2,7 +2,7 @@ import {
     Entity,
     Column,
     PrimaryGeneratedColumn,
-    OneToMany
+    OneToMany, ManyToMany, JoinTable
 } from 'typeorm';
 import {Row} from "./Row";
 import {Col} from "./Col";
@@ -25,7 +25,7 @@ export class Template {
 
     @OneToMany(
         type => Col,
-        row => row.template,
+        column => column.template,
         {
             eager:true,
             cascade: true

@@ -18,7 +18,7 @@ export class Row {
     @OneToMany(
         type => Cell,
         cell => cell.row,
-        {cascade: true,eager: true}
+        {cascade: true}
         )
     cells: Cell[];
 }

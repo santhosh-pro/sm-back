@@ -7,6 +7,7 @@ import {ColumnController} from "./column.controller";
 import {TreeController} from "./tree.controller";
 import {CellController} from "./cell.controller";
 import {RowController} from "./row.controller";
+import {RowService} from "./row.service";
 
 @Module({
     imports: [TypeOrmModule.forFeature(entities)],
@@ -17,6 +18,6 @@ import {RowController} from "./row.controller";
         CellController,
         RowController
     ],
-    providers: [TemplateService]
+    providers: [TemplateService,RowService]
 })
 export class TemplateModule {}

@@ -3,34 +3,37 @@ import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {Row} from "../entities/Row";
-import {Cell} from "../entities/Cell";
+import {RowService} from "./row.service";
 
 @Controller('api/rows')
 export class RowController {
     constructor(
         @InjectRepository(Row)
         private readonly repo: Repository<Row>,
-        @InjectRepository(Row)
-        private readonly rows: Repository<Row[]>,
-        @InjectRepository(Cell)
-        private readonly cells: Repository<Cell[]>,
+        private readonly rowService: RowService
     ) {}
 
     @Get()
     public async all(
         @Query('page') page = 0,
-        @Query('limit') limit = 10,
+        @Query('limit') limit = 20,
         @Query('templateid')templateId = 0
-    ):Promise<Pagination<Row>>{
+    ):Promise<Row[]>{
         limit = limit > 100 ? 100 : limit;
-        const search:any = {};
-        if (templateId) search.templateId = templateId;
+        let search:any = {};
+        if (templateId) {
+            search = {
+                where: {template:{id: templateId}},
+            };
+        }
         const options: IPaginationOptions = {
             limit,
             page
         };
-
-        return await paginate<Row>(this.repo, options, search);
+        let relations = ['template','cells','cells.template','cells.link','cells.column','cells.link.cells'];
+        let query = await this.repo.find({relations,where: {template:{id: templateId}}});
+        return query;
+        //return await paginate<Row>(this.repo, options, search);
     }
 
     @Get(":id")
@@ -44,19 +47,15 @@ export class RowController {
     }
 
     @Put()
-    public async update(@Body() row: Row | Row[]):Promise<Row | Row[]> {
+    public async update(@Body() row: Row | Row[]):Promise<Row | void> {
         if (Array.isArray(row)) {
-            for (const r of row){
-                const nRow = new Row();
-                nRow.id = r.id;
-                nRow.template = r.template;
-                const savedRow = await this.repo.save(nRow);
-                r.cells.forEach(cell => {
-                    cell.row = savedRow
-                });
-                await this.cells.save(r.cells);
+            try {
+                await this.rowService.saveMany(row);
+            }catch (e) {
+                console.log(e)
             }
-            return await this.repo.find({where: {templateId: row[0].template.id}});
+
+            return;
         }
         return await this.repo.save(row);
 
