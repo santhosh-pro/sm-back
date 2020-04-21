@@ -1,17 +1,26 @@
 import {Body, Controller, Delete, Get, Param, Post, Put, Query} from '@nestjs/common';
 import {Repository} from "typeorm";
 import {InjectRepository} from "@nestjs/typeorm";
-import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {Row} from "../entities/Row";
 import {RowService} from "./row.service";
 
 @Controller('api/rows')
 export class RowController {
+    relations: string[];
     constructor(
         @InjectRepository(Row)
         private readonly repo: Repository<Row>,
         private readonly rowService: RowService
-    ) {}
+    ) {
+        this.relations = [
+            'template',
+            'cells',
+            'cells.template',
+            'cells.link',
+            'cells.column',
+            'cells.link.cells'
+        ];
+    }
 
     @Get()
     public async all(
@@ -19,26 +28,21 @@ export class RowController {
         @Query('limit') limit = 20,
         @Query('templateid')templateId = 0
     ):Promise<Row[]>{
-        limit = limit > 100 ? 100 : limit;
-        let search:any = {};
-        if (templateId) {
-            search = {
-                where: {template:{id: templateId}},
-            };
-        }
-        const options: IPaginationOptions = {
-            limit,
-            page
-        };
-        let relations = ['template','cells','cells.template','cells.link','cells.column','cells.link.cells'];
-        let query = await this.repo.find({relations,where: {template:{id: templateId}}});
-        return query;
-        //return await paginate<Row>(this.repo, options, search);
+        return  await this.repo.find({
+            relations: this.relations,
+            where: {
+                template:{
+                    id: templateId
+                }
+            }
+        });
     }
 
     @Get(":id")
     public async one(@Param("id")id:number):Promise<any>{
-        return  await this.repo.find({id});
+        return  await this.repo.findOne(id,{
+            relations: this.relations
+        });
     }
 
     @Post()

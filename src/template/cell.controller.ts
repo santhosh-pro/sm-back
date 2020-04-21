@@ -4,6 +4,7 @@ import {InjectRepository} from "@nestjs/typeorm";
 import {IPaginationOptions, paginate, Pagination} from "nestjs-typeorm-paginate";
 import {Cell} from "../entities/Cell";
 import {Row} from "../entities/Row";
+import {Template} from "../entities/Template";
 
 @Controller('api/cells')
 export class CellController {
@@ -33,7 +34,9 @@ export class CellController {
 
     @Get(":id")
     public async one(@Param("id")id:number):Promise<any>{
-        return  await this.repo.find({id});
+        let cell = await this.repo.findOne(id);
+        console.log(cell);
+        return cell;
     }
 
     @Post()
@@ -48,12 +51,25 @@ export class CellController {
 
     @Post("/create-link")
     public async createLink(@Body() cell: Cell): Promise<Cell>{
-        let cellFromDb = await this.repo.findOne({id: cell.id});
+        let cellFromDb = await this.repo.findOne({
+            where:{id: cell.id},
+            relations: ['row','template','column','link']
+        });
         if (cellFromDb) {
+            await this.repo.delete( cellFromDb.id);
+            cellFromDb.id = 0;
             cellFromDb.link = cell.link;
             return await this.repo.save(cellFromDb);
+        } else {
+            let hasNotRow = !('id' in cell.row && cell.row.id);
+            if (hasNotRow) {
+                let row = new Row();
+                row.template = new Template();
+                row.template.id = cell.template.id;
+                cell.row = await this.rowRepo.save(row);
+            }
+            return await this.repo.save(cell);
         }
-        return await this.repo.save(cell);
     }
 
     @Put()
